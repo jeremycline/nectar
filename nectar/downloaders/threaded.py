@@ -234,7 +234,8 @@ class HTTPThreadedDownloader(Downloader):
                     break
                 except requests.ConnectionError as e:
                     if isinstance(e.strerror, httplib.BadStatusLine):
-                        msg = _("Download of {url} failed. Re-trying.".format(url=request.url))
+                        msg = _("Download of {url} failed: {e}. Re-trying.".format(
+                            url=request.url, e=str(e)))
                         _logger.warning(msg)
                         continue
                     raise
@@ -317,7 +318,7 @@ class HTTPThreadedDownloader(Downloader):
             report.download_canceled()
 
         except DownloadFailed as e:
-            _logger.debug('download failed: %s' % str(e))
+            _logger.info(str(e))
             report.error_msg = e.args[2]
             report.error_report['response_code'] = e.args[1]
             report.error_report['response_msg'] = e.args[2]
